@@ -1,6 +1,8 @@
-use yew::prelude::*;
+mod app;
 
+//use yew::prelude::*;
 
+/*
 #[derive(Properties, PartialEq)]
 struct TodoProps {
     state: UseStateHandle<u64>,
@@ -55,6 +57,12 @@ fn app() -> Html {
         <Counter {state} />
     }
 }
-fn main() {
+fn main0() {
     yew::start_app::<App>();
+}
+*/
+
+fn main() {
+    wasm_logger::init(wasm_logger::Config::default());
+    yew::start_app::<crate::app::DropPhoto>();
 }
