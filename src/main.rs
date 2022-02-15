@@ -1,47 +1,60 @@
 use yew::prelude::*;
 
-enum Msg {
-    AddOne,
+
+#[derive(Properties, PartialEq)]
+struct TodoProps {
+    state: UseStateHandle<u64>,
 }
 
-struct Model {
-    value: i64,
+#[function_component(Counter)]
+fn counter(props: &TodoProps) -> Html {
+    let increment = {
+        let state = props.state.clone();
+        Callback::from(move |_| state.set(*state + 1))
+    };
+
+    let decrement = {
+        let state = props.state.clone();
+        Callback::from(move |_| state.set(*state - 1))
+    };
+
+    let reset = {
+        let state = props.state.clone();
+        Callback::from(move |_| state.set(0))
+    };
+
+    html! {
+        <div class="uk-position-center uk-text-center">
+            <button
+                onclick={increment}
+                class="uk-button uk-button-primary uk-button-large"
+            >
+                { "+1" }
+            </button>
+            <button
+                onclick={reset}
+                class="uk-button uk-button-primary uk-button-large"
+            >
+                { "0" }
+            </button>
+            <button
+                onclick={decrement}
+                class="uk-button uk-button-primary uk-button-large"
+            >
+                { "-1" }
+        </button>
+            <p>{ *props.state }</p>
+        </div>
+    }
 }
 
-impl Component for Model {
-    type Message = Msg;
-    type Properties = ();
-
-    fn create(_ctx: &Context<Self>) -> Self {
-        Self {
-            value: 0,
-        }
-    }
-
-    fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
-        match msg {
-            Msg::AddOne => {
-                self.value += 1;
-                // the value has changed so we need to
-                // re-render for it to appear on the page
-                true
-            }
-        }
-    }
-
-    fn view(&self, ctx: &Context<Self>) -> Html {
-        // This gives us a component's "`Scope`" which allows us to send messages, etc to the component.
-        let link = ctx.link();
-        html! {
-            <div>
-                <button onclick={link.callback(|_| Msg::AddOne)}>{ "+1" }</button>
-                <p>{ self.value }</p>
-            </div>
-        }
+#[function_component(App)]
+fn app() -> Html {
+    let state = use_state(|| 0 as u64);
+    html! {
+        <Counter {state} />
     }
 }
-
 fn main() {
-    yew::start_app::<Model>();
+    yew::start_app::<App>();
 }
-
